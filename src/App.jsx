@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import cx from 'classnames';
 import Draggable from 'react-draggable';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,11 +20,12 @@ import './styles.css';
 
 const BaseBlock = ({
   block,
-  selected,
+  selectedBlock,
   hingeBottomLeft,
   hingeBottomRight,
   hingeTopRight,
   hingeTopLeft,
+  setSelected,
   ...props
 }) => {
   const [hingeActivated, setHingeActivated] = useState({
@@ -33,10 +34,25 @@ const BaseBlock = ({
     bottomRight: false,
     bottomLeft: false,
   });
+
+  const topRightId = useMemo(()=>uuidv4(), [])
+  const topLeftId = useMemo(()=>uuidv4(), [])
+  const bottomRightId = useMemo(()=>uuidv4(), [])
+  const bottomLeftId = useMemo(()=>uuidv4(), [])
+
+
   return (
     <Box
+    onDoubleClick={(e) => {
+      e.stopPropagation()
+      console.log(block.id)
+      if (selectedBlock?.id === block.id) {
+        setSelected();
+      } else {
+        setSelected(block);
+      }
+    }}
       position="relative"
-      className={cx({ dots: selected })}
       w={`${block.width}px`}
       h={`${block.height}px`}
       borderTopRightRadius={
@@ -54,9 +70,9 @@ const BaseBlock = ({
       backgroundColor={block.color}
       {...props}
     >
-      {selected && (
+      {selectedBlock?.id === block.id && (
         <>
-          {!hingeActivated.topRight && (
+          {!hingeActivated.topRight && !hingeTopRight && (
             <Box
               position="absolute"
               left={block.width - 14}
@@ -73,7 +89,7 @@ const BaseBlock = ({
               }}
             ></Box>
           )}
-          {!hingeActivated.topLeft && (
+          {!hingeActivated.topLeft && !hingeTopLeft && (
             <Box
               position="absolute"
               right={block.width - 14}
@@ -90,7 +106,7 @@ const BaseBlock = ({
               }}
             ></Box>
           )}
-          {!hingeActivated.bottomRight && (
+          {!hingeActivated.bottomRight && !hingeBottomRight && (
             <Box
               position="absolute"
               left={block.width - 14}
@@ -107,7 +123,7 @@ const BaseBlock = ({
               }}
             ></Box>
           )}
-          {!hingeActivated.bottomLeft && (
+          {!hingeActivated.bottomLeft && !hingeBottomLeft && (
             <Box
               position="absolute"
               right={block.width - 14}
@@ -132,12 +148,14 @@ const BaseBlock = ({
           <Box position="absolute" left={block.width} bottom={block.height}>
             <BaseBlock
               block={{
-                id: uuidv4(),
+                id: topRightId,
                 color: 'black',
                 height: 50,
                 width: 50,
               }}
               hingeBottomLeft
+              selectedBlock={selectedBlock}
+              setSelected={setSelected}
             />
           </Box>
           <Box
@@ -155,12 +173,14 @@ const BaseBlock = ({
           <Box position="absolute" right={block.width} bottom={block.height}>
             <BaseBlock
               block={{
-                id: uuidv4(),
+                id: topLeftId,
                 color: 'black',
                 height: 50,
                 width: 50,
               }}
               hingeBottomRight
+              selectedBlock={selectedBlock}
+              setSelected={setSelected}
             />
           </Box>
           <Box
@@ -178,12 +198,14 @@ const BaseBlock = ({
           <Box position="absolute" right={block.width} top={block.height}>
             <BaseBlock
               block={{
-                id: uuidv4(),
+                id: bottomLeftId,
                 color: 'black',
                 height: 50,
                 width: 50,
               }}
               hingeTopRight
+              selectedBlock={selectedBlock}
+              setSelected={setSelected}
             />
           </Box>
           <Box
@@ -201,12 +223,14 @@ const BaseBlock = ({
           <Box position="absolute" left={block.width} top={block.height}>
             <BaseBlock
               block={{
-                id: uuidv4(),
+                id: bottomRightId,
                 color: 'black',
                 height: 50,
                 width: 50,
               }}
               hingeTopLeft
+              selectedBlock={selectedBlock}
+              setSelected={setSelected}
             />
           </Box>
           <Box
@@ -223,10 +247,10 @@ const BaseBlock = ({
   );
 };
 
-const RootBlock = ({ block, selected, ...props }) => {
+const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
   return (
     <Draggable key={block.id}>
-      <BaseBlock block={block} selected={selected} {...props} />
+      <BaseBlock block={block} selectedBlock={selectedBlock} setSelected={setSelected}  {...props} />
     </Draggable>
   );
 };
@@ -245,7 +269,7 @@ const SizeInput = ({ defaultValue, ...props }) => {
 
 const App = () => {
   const [blocks, setBlocks] = useState([]);
-  const [selected, setSelected] = useState();
+  const [selectedBlock, setSelected] = useState();
   return (
     <Container px="10">
       <Flex direction="row" gap="16">
@@ -267,18 +291,18 @@ const App = () => {
           >
             Add Block
           </Button>
-          {selected && (
+          {selectedBlock && (
             <Box display="flex" flexDirection="column" gap="16px">
               <FormLabel>
                 Height:
                 <SizeInput
                   onChange={(newValue) => {
                     const oldBlock = blocks.find(
-                      (block) => block.id === selected.id
+                      (block) => block.id === selectedBlock.id
                     );
                     const newBlock = { ...oldBlock, height: newValue };
                     const newBlocks = blocks.map((block) => {
-                      if (block.id !== selected.id) {
+                      if (block.id !== selectedBlock.id) {
                         return block;
                       }
 
@@ -287,7 +311,7 @@ const App = () => {
 
                     setBlocks(newBlocks);
                   }}
-                  defaultValue={selected.height}
+                  defaultValue={selectedBlock.height}
                 ></SizeInput>
               </FormLabel>
               <FormLabel>
@@ -295,7 +319,7 @@ const App = () => {
                 <SizeInput
                   onChange={(newValue) => {
                     const oldBlock = blocks.find(
-                      (block) => block.id === selected.id
+                      (block) => block.id === selectedBlock.id
                     );
                     const newBlock = { ...oldBlock, width: newValue };
                     const newBlocks = blocks.map((block) => {
@@ -308,7 +332,7 @@ const App = () => {
 
                     setBlocks(newBlocks);
                   }}
-                  defaultValue={selected.width}
+                  defaultValue={selectedBlock.width}
                 ></SizeInput>
               </FormLabel>
             </Box>
@@ -320,14 +344,8 @@ const App = () => {
               <RootBlock
                 key={block.id}
                 block={block}
-                selected={selected?.id === block.id}
-                onDoubleClick={() => {
-                  if (selected?.id === block.id) {
-                    setSelected();
-                  } else {
-                    setSelected(block);
-                  }
-                }}
+                selectedBlock={selectedBlock}
+                setSelected={setSelected}
               />
             );
           })}
