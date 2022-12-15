@@ -35,26 +35,30 @@ const BaseBlock = ({
     bottomLeft: false,
   });
 
-  const topRightId = useMemo(()=>uuidv4(), [])
-  const topLeftId = useMemo(()=>uuidv4(), [])
-  const bottomRightId = useMemo(()=>uuidv4(), [])
-  const bottomLeftId = useMemo(()=>uuidv4(), [])
+  const [size, setSize] = useState({
+    height: 50,
+    width: 50,
+  });
 
+  const topRightId = useMemo(() => uuidv4(), []);
+  const topLeftId = useMemo(() => uuidv4(), []);
+  const bottomRightId = useMemo(() => uuidv4(), []);
+  const bottomLeftId = useMemo(() => uuidv4(), []);
 
   return (
     <Box
-    onDoubleClick={(e) => {
-      e.stopPropagation()
-      console.log(block.id)
-      if (selectedBlock?.id === block.id) {
-        setSelected();
-      } else {
-        setSelected(block);
-      }
-    }}
+      onDoubleClick={(e) => {
+        e.stopPropagation();
+        console.log(block.id);
+        if (selectedBlock?.id === block.id) {
+          setSelected();
+        } else {
+          setSelected(block);
+        }
+      }}
       position="relative"
-      w={`${block.width}px`}
-      h={`${block.height}px`}
+      w={`${size.width}px`}
+      h={`${size.height}px`}
       borderTopRightRadius={
         hingeTopRight || hingeActivated.topRight ? '0' : '25px'
       }
@@ -72,11 +76,32 @@ const BaseBlock = ({
     >
       {selectedBlock?.id === block.id && (
         <>
+          <Box display="flex" flexDirection="column" gap="16px" position="revert" zIndex="1" top="200px">
+            <FormLabel>
+              Height:
+              <SizeInput
+                onChange={(newValue) => {
+                  setSize({ ...size, height: newValue });
+                }}
+                defaultValue={size.height}
+              ></SizeInput>
+            </FormLabel>
+            <FormLabel>
+              Width:
+              <SizeInput
+                onChange={(newValue) => {
+                  setSize({ ...size, width: newValue });
+                }}
+                defaultValue={size.width}
+              ></SizeInput>
+            </FormLabel>
+          </Box>
+
           {!hingeActivated.topRight && !hingeTopRight && (
             <Box
               position="absolute"
-              left={block.width - 14}
-              bottom={block.height - 14}
+              left={size.width - 14}
+              bottom={size.height - 14}
               color={block.color}
               backgroundColor="primary"
               w="15px"
@@ -92,8 +117,8 @@ const BaseBlock = ({
           {!hingeActivated.topLeft && !hingeTopLeft && (
             <Box
               position="absolute"
-              right={block.width - 14}
-              bottom={block.height - 14}
+              right={size.width - 14}
+              bottom={size.height - 14}
               color={block.color}
               backgroundColor="primary"
               w="15px"
@@ -109,8 +134,8 @@ const BaseBlock = ({
           {!hingeActivated.bottomRight && !hingeBottomRight && (
             <Box
               position="absolute"
-              left={block.width - 14}
-              top={block.height - 14}
+              left={size.width - 14}
+              top={size.height - 14}
               color={block.color}
               backgroundColor="primary"
               w="15px"
@@ -126,8 +151,8 @@ const BaseBlock = ({
           {!hingeActivated.bottomLeft && !hingeBottomLeft && (
             <Box
               position="absolute"
-              right={block.width - 14}
-              top={block.height - 14}
+              right={size.width - 14}
+              top={size.height - 14}
               color={block.color}
               backgroundColor="primary"
               w="15px"
@@ -145,13 +170,11 @@ const BaseBlock = ({
 
       {hingeActivated.topRight && (
         <>
-          <Box position="absolute" left={block.width} bottom={block.height}>
+          <Box position="absolute" left={size.width} bottom={size.height}>
             <BaseBlock
               block={{
                 id: topRightId,
                 color: 'black',
-                height: 50,
-                width: 50,
               }}
               hingeBottomLeft
               selectedBlock={selectedBlock}
@@ -160,8 +183,8 @@ const BaseBlock = ({
           </Box>
           <Box
             position="absolute"
-            left={block.width - 19}
-            bottom={block.height - 19}
+            left={size.width - 19}
+            bottom={size.height - 19}
             color={block.color}
           >
             <Hinge className="rotate" />
@@ -170,13 +193,11 @@ const BaseBlock = ({
       )}
       {hingeActivated.topLeft && (
         <>
-          <Box position="absolute" right={block.width} bottom={block.height}>
+          <Box position="absolute" right={size.width} bottom={size.height}>
             <BaseBlock
               block={{
                 id: topLeftId,
                 color: 'black',
-                height: 50,
-                width: 50,
               }}
               hingeBottomRight
               selectedBlock={selectedBlock}
@@ -185,8 +206,8 @@ const BaseBlock = ({
           </Box>
           <Box
             position="absolute"
-            right={block.width - 19}
-            bottom={block.height - 19}
+            right={size.width - 19}
+            bottom={size.height - 19}
             color={block.color}
           >
             <Hinge />
@@ -195,13 +216,11 @@ const BaseBlock = ({
       )}
       {hingeActivated.bottomLeft && (
         <>
-          <Box position="absolute" right={block.width} top={block.height}>
+          <Box position="absolute" right={size.width} top={size.height}>
             <BaseBlock
               block={{
                 id: bottomLeftId,
                 color: 'black',
-                height: 50,
-                width: 50,
               }}
               hingeTopRight
               selectedBlock={selectedBlock}
@@ -210,8 +229,8 @@ const BaseBlock = ({
           </Box>
           <Box
             position="absolute"
-            right={block.width - 18}
-            top={block.height - 18}
+            right={size.width - 18}
+            top={size.height - 18}
             color={block.color}
           >
             <Hinge className="rotate" />
@@ -220,7 +239,7 @@ const BaseBlock = ({
       )}
       {hingeActivated.bottomRight && (
         <>
-          <Box position="absolute" left={block.width} top={block.height}>
+          <Box position="absolute" left={size.width} top={size.height}>
             <BaseBlock
               block={{
                 id: bottomRightId,
@@ -235,8 +254,8 @@ const BaseBlock = ({
           </Box>
           <Box
             position="absolute"
-            left={block.width - 18}
-            top={block.height - 18}
+            left={size.width - 18}
+            top={size.height - 18}
             color={block.color}
           >
             <Hinge />
@@ -250,14 +269,19 @@ const BaseBlock = ({
 const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
   return (
     <Draggable key={block.id}>
-      <BaseBlock block={block} selectedBlock={selectedBlock} setSelected={setSelected}  {...props} />
+      <BaseBlock
+        block={block}
+        selectedBlock={selectedBlock}
+        setSelected={setSelected}
+        {...props}
+      />
     </Draggable>
   );
 };
 
 const SizeInput = ({ defaultValue, ...props }) => {
   return (
-    <NumberInput step={50} defaultValue={defaultValue} min={0} {...props}>
+    <NumberInput step={50} defaultValue={defaultValue} min={50} {...props}>
       <NumberInputField />
       <NumberInputStepper>
         <NumberIncrementStepper />
@@ -291,52 +315,6 @@ const App = () => {
           >
             Add Block
           </Button>
-          {selectedBlock && (
-            <Box display="flex" flexDirection="column" gap="16px">
-              <FormLabel>
-                Height:
-                <SizeInput
-                  onChange={(newValue) => {
-                    const oldBlock = blocks.find(
-                      (block) => block.id === selectedBlock.id
-                    );
-                    const newBlock = { ...oldBlock, height: newValue };
-                    const newBlocks = blocks.map((block) => {
-                      if (block.id !== selectedBlock.id) {
-                        return block;
-                      }
-
-                      return newBlock;
-                    });
-
-                    setBlocks(newBlocks);
-                  }}
-                  defaultValue={selectedBlock.height}
-                ></SizeInput>
-              </FormLabel>
-              <FormLabel>
-                Width:
-                <SizeInput
-                  onChange={(newValue) => {
-                    const oldBlock = blocks.find(
-                      (block) => block.id === selectedBlock.id
-                    );
-                    const newBlock = { ...oldBlock, width: newValue };
-                    const newBlocks = blocks.map((block) => {
-                      if (block.id !== oldBlock.id) {
-                        return block;
-                      }
-
-                      return newBlock;
-                    });
-
-                    setBlocks(newBlocks);
-                  }}
-                  defaultValue={selectedBlock.width}
-                ></SizeInput>
-              </FormLabel>
-            </Box>
-          )}
         </Box>
         <div>
           {blocks.map((block) => {
