@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import cx from "classnames";
-import Draggable from "react-draggable";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState } from 'react';
+import cx from 'classnames';
+import Draggable from 'react-draggable';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Box,
   Flex,
@@ -13,15 +13,19 @@ import {
   NumberDecrementStepper,
   FormLabel,
   Container,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
-import "./styles.css";
+import './styles.css';
 
 const Hinge = () => {
   return (
-    <div class="box concave">
-      <div class="l"></div>
-      <div class="r"></div>
+    <div class="hinge">
+      <div class="box box-r concave">
+        <div class="r"></div>
+      </div>
+      <div class="box box-l concave">
+        <div class="l"></div>
+      </div>
     </div>
   );
 };
@@ -32,10 +36,10 @@ const Block = ({ block, selected, ...props }) => {
       <Box
         position="absolute"
         className={cx({ dots: selected })}
-        border={selected ? "3px solid var(--colors-primary)" : ""}
+        border={selected ? '3px solid var(--colors-primary)' : ''}
         w={`${block.width}px`}
         h={`${block.height}px`}
-        borderRadius={50}
+        borderRadius={'50px 50px 0px 50px'}
         backgroundColor={block.color}
         {...props}
       >
@@ -51,7 +55,13 @@ const Block = ({ block, selected, ...props }) => {
           </Button>
         )}
 
-        <Hinge />
+        <Box
+          position="relative"
+          top={50 - block.height}
+          left={block.width - 25}
+        >
+          <Hinge />
+        </Box>
       </Box>
     </Draggable>
   );
@@ -76,7 +86,7 @@ const App = () => {
   return (
     <Container px="10">
       <Flex direction="row" gap="16">
-        <Box as="aside" w={300} bgColor={"gray.300"}>
+        <Box as="aside" w={300} bgColor={'gray.300'}>
           <Button
             bgColor="primary"
             padding={10}
@@ -85,7 +95,7 @@ const App = () => {
               setBlocks(
                 blocks.concat({
                   id: uuidv4(),
-                  color: "accent",
+                  color: 'accent',
                   height: 50,
                   width: 50,
                 })
