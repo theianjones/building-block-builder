@@ -18,7 +18,15 @@ import { ReactComponent as Hinge } from './assets/hinge.svg';
 
 import './styles.css';
 
-const Block = ({ block, selected, ...props }) => {
+const BaseBlock = ({
+  block,
+  selected,
+  hingeBottomLeft,
+  hingeBottomRight,
+  hingeTopRight,
+  hingeTopLeft,
+  ...props
+}) => {
   const [hingeActivated, setHingeActivated] = useState({
     topRight: false,
     topLeft: false,
@@ -26,93 +34,112 @@ const Block = ({ block, selected, ...props }) => {
     bottomLeft: false,
   });
   return (
-    <Draggable key={block.id}>
-      <Box
-        position="relative"
-        className={cx({ dots: selected })}
-        w={`${block.width}px`}
-        h={`${block.height}px`}
-        borderTopRightRadius={hingeActivated.topRight ? '0' : '25px'}
-        borderTopLeftRadius={hingeActivated.topLeft ? '0' : '25px'}
-        borderBottomRightRadius={hingeActivated.bottomRight ? '0' : '25px'}
-        borderBottomLeftRadius={hingeActivated.bottomLeft ? '0' : '25px'}
-        backgroundColor={block.color}
-        {...props}
-      >
-        {selected && (
-          <>
-            {!hingeActivated.topRight && (
-              <Box
-                position="absolute"
-                left={block.width - 14}
-                bottom={block.height - 14}
-                color={block.color}
-                backgroundColor="primary"
-                w="15px"
-                h="15px"
-                borderRadius="100px"
-                cursor="pointer"
-                as={Button}
-                onClick={() => {
-                  setHingeActivated({ ...hingeActivated, topRight: true });
-                }}
-              ></Box>
-            )}
-            {!hingeActivated.topLeft && (
-              <Box
-                position="absolute"
-                right={block.width - 14}
-                bottom={block.height - 14}
-                color={block.color}
-                backgroundColor="primary"
-                w="15px"
-                h="15px"
-                borderRadius="100px"
-                cursor="pointer"
-                as={Button}
-                onClick={() => {
-                  setHingeActivated({ ...hingeActivated, topLeft: true });
-                }}
-              ></Box>
-            )}
-            {!hingeActivated.bottomRight && (
-              <Box
-                position="absolute"
-                left={block.width - 14}
-                top={block.height - 14}
-                color={block.color}
-                backgroundColor="primary"
-                w="15px"
-                h="15px"
-                borderRadius="100px"
-                cursor="pointer"
-                as={Button}
-                onClick={() => {
-                  setHingeActivated({ ...hingeActivated, bottomRight: true });
-                }}
-              ></Box>
-            )}
-            {!hingeActivated.bottomLeft && (
-              <Box
-                position="absolute"
-                right={block.width - 14}
-                top={block.height - 14}
-                color={block.color}
-                backgroundColor="primary"
-                w="15px"
-                h="15px"
-                borderRadius="100px"
-                cursor="pointer"
-                as={Button}
-                onClick={() => {
-                  setHingeActivated({ ...hingeActivated, bottomLeft: true });
-                }}
-              ></Box>
-            )}
-          </>
-        )}
+    <Box
+      position="relative"
+      className={cx({ dots: selected })}
+      w={`${block.width}px`}
+      h={`${block.height}px`}
+      borderTopRightRadius={
+        hingeTopRight || hingeActivated.topRight ? '0' : '25px'
+      }
+      borderTopLeftRadius={
+        hingeTopLeft || hingeActivated.topLeft ? '0' : '25px'
+      }
+      borderBottomRightRadius={
+        hingeBottomRight || hingeActivated.bottomRight ? '0' : '25px'
+      }
+      borderBottomLeftRadius={
+        hingeBottomLeft || hingeActivated.bottomLeft ? '0' : '25px'
+      }
+      backgroundColor={block.color}
+      {...props}
+    >
+      {selected && (
+        <>
+          {!hingeActivated.topRight && (
+            <Box
+              position="absolute"
+              left={block.width - 14}
+              bottom={block.height - 14}
+              color={block.color}
+              backgroundColor="primary"
+              w="15px"
+              h="15px"
+              borderRadius="100px"
+              cursor="pointer"
+              as={Button}
+              onClick={() => {
+                setHingeActivated({ ...hingeActivated, topRight: true });
+              }}
+            ></Box>
+          )}
+          {!hingeActivated.topLeft && (
+            <Box
+              position="absolute"
+              right={block.width - 14}
+              bottom={block.height - 14}
+              color={block.color}
+              backgroundColor="primary"
+              w="15px"
+              h="15px"
+              borderRadius="100px"
+              cursor="pointer"
+              as={Button}
+              onClick={() => {
+                setHingeActivated({ ...hingeActivated, topLeft: true });
+              }}
+            ></Box>
+          )}
+          {!hingeActivated.bottomRight && (
+            <Box
+              position="absolute"
+              left={block.width - 14}
+              top={block.height - 14}
+              color={block.color}
+              backgroundColor="primary"
+              w="15px"
+              h="15px"
+              borderRadius="100px"
+              cursor="pointer"
+              as={Button}
+              onClick={() => {
+                setHingeActivated({ ...hingeActivated, bottomRight: true });
+              }}
+            ></Box>
+          )}
+          {!hingeActivated.bottomLeft && (
+            <Box
+              position="absolute"
+              right={block.width - 14}
+              top={block.height - 14}
+              color={block.color}
+              backgroundColor="primary"
+              w="15px"
+              h="15px"
+              borderRadius="100px"
+              cursor="pointer"
+              as={Button}
+              onClick={() => {
+                setHingeActivated({ ...hingeActivated, bottomLeft: true });
+              }}
+            ></Box>
+          )}
+        </>
+      )}
 
-        {hingeActivated.topRight && (
+      {hingeActivated.topRight && (
+        <>
+          <Box position="absolute" left={block.width} bottom={block.height}>
+            <BaseBlock
+              block={{
+                id: uuidv4(),
+                color: 'black',
+                height: 50,
+                width: 50,
+              }}
+              hingeBottomLeft
+            />
+          </Box>
           <Box
             position="absolute"
             left={block.width - 19}
@@ -121,8 +148,21 @@ const Block = ({ block, selected, ...props }) => {
           >
             <Hinge className="rotate" />
           </Box>
-        )}
-        {hingeActivated.topLeft && (
+        </>
+      )}
+      {hingeActivated.topLeft && (
+        <>
+          <Box position="absolute" right={block.width} bottom={block.height}>
+            <BaseBlock
+              block={{
+                id: uuidv4(),
+                color: 'black',
+                height: 50,
+                width: 50,
+              }}
+              hingeBottomRight
+            />
+          </Box>
           <Box
             position="absolute"
             right={block.width - 19}
@@ -131,8 +171,21 @@ const Block = ({ block, selected, ...props }) => {
           >
             <Hinge />
           </Box>
-        )}
-        {hingeActivated.bottomLeft && (
+        </>
+      )}
+      {hingeActivated.bottomLeft && (
+        <>
+          <Box position="absolute" right={block.width} top={block.height}>
+            <BaseBlock
+              block={{
+                id: uuidv4(),
+                color: 'black',
+                height: 50,
+                width: 50,
+              }}
+              hingeTopRight
+            />
+          </Box>
           <Box
             position="absolute"
             right={block.width - 18}
@@ -141,8 +194,21 @@ const Block = ({ block, selected, ...props }) => {
           >
             <Hinge className="rotate" />
           </Box>
-        )}
-        {hingeActivated.bottomRight && (
+        </>
+      )}
+      {hingeActivated.bottomRight && (
+        <>
+          <Box position="absolute" left={block.width} top={block.height}>
+            <BaseBlock
+              block={{
+                id: uuidv4(),
+                color: 'black',
+                height: 50,
+                width: 50,
+              }}
+              hingeTopLeft
+            />
+          </Box>
           <Box
             position="absolute"
             left={block.width - 18}
@@ -151,8 +217,16 @@ const Block = ({ block, selected, ...props }) => {
           >
             <Hinge />
           </Box>
-        )}
-      </Box>
+        </>
+      )}
+    </Box>
+  );
+};
+
+const RootBlock = ({ block, selected, ...props }) => {
+  return (
+    <Draggable key={block.id}>
+      <BaseBlock block={block} selected={selected} {...props} />
     </Draggable>
   );
 };
@@ -172,7 +246,6 @@ const SizeInput = ({ defaultValue, ...props }) => {
 const App = () => {
   const [blocks, setBlocks] = useState([]);
   const [selected, setSelected] = useState();
-  console.log(blocks, selected);
   return (
     <Container px="10">
       <Flex direction="row" gap="16">
@@ -244,7 +317,7 @@ const App = () => {
         <div>
           {blocks.map((block) => {
             return (
-              <Block
+              <RootBlock
                 key={block.id}
                 block={block}
                 selected={selected?.id === block.id}
