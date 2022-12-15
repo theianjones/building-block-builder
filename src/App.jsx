@@ -30,19 +30,24 @@ const Hinge = () => {
   );
 };
 
+const BaseBlock = ({ block, selected, ...props }) => {
+  return (
+    <Box
+      position="absolute"
+      border={selected ? '3px solid var(--colors-primary)' : ''}
+      w={`${block.width}px`}
+      h={`${block.height}px`}
+      borderRadius={'50px 50px 0px 50px'}
+      backgroundColor={block.color}
+      {...props}
+    />
+  );
+};
+
 const Block = ({ block, selected, ...props }) => {
   return (
     <Draggable key={block.id}>
-      <Box
-        position="absolute"
-        className={cx({ dots: selected })}
-        border={selected ? '3px solid var(--colors-primary)' : ''}
-        w={`${block.width}px`}
-        h={`${block.height}px`}
-        borderRadius={'50px 50px 0px 50px'}
-        backgroundColor={block.color}
-        {...props}
-      >
+      <BaseBlock block={block} selected={selected} {...props}>
         {false && (
           <Button
             className="bottom-right-btn"
@@ -57,12 +62,13 @@ const Block = ({ block, selected, ...props }) => {
 
         <Box
           position="relative"
-          top={50 - block.height}
+          top={block.height - 50}
           left={block.width - 25}
         >
           <Hinge />
+          <BaseBlock block={{color: 'accent'}}/>
         </Box>
-      </Box>
+      </BaseBlock>
     </Draggable>
   );
 };
