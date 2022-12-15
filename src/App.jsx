@@ -19,6 +19,12 @@ import { ReactComponent as Hinge } from './assets/hinge.svg';
 import './styles.css';
 
 const Block = ({ block, selected, ...props }) => {
+  const [hingeActivated, setHingeActivated] = useState({
+    topRight: false,
+    topLeft: false,
+    bottomRight: false,
+    bottomLeft: false,
+  });
   return (
     <Draggable key={block.id}>
       <Box
@@ -26,61 +32,126 @@ const Block = ({ block, selected, ...props }) => {
         className={cx({ dots: selected })}
         w={`${block.width}px`}
         h={`${block.height}px`}
-        borderRadius={'25px'}
+        borderTopRightRadius={hingeActivated.topRight ? '0' : '25px'}
+        borderTopLeftRadius={hingeActivated.topLeft ? '0' : '25px'}
+        borderBottomRightRadius={hingeActivated.bottomRight ? '0' : '25px'}
+        borderBottomLeftRadius={hingeActivated.bottomLeft ? '0' : '25px'}
         backgroundColor={block.color}
         {...props}
       >
         {selected && (
+          <>
+            {!hingeActivated.topRight && (
+              <Box
+                position="absolute"
+                left={block.width - 14}
+                bottom={block.height - 14}
+                color={block.color}
+                backgroundColor="primary"
+                w="15px"
+                h="15px"
+                borderRadius="100px"
+                cursor="pointer"
+                as={Button}
+                onClick={() => {
+                  setHingeActivated({ ...hingeActivated, topRight: true });
+                }}
+              ></Box>
+            )}
+            {!hingeActivated.topLeft && (
+              <Box
+                position="absolute"
+                right={block.width - 14}
+                bottom={block.height - 14}
+                color={block.color}
+                backgroundColor="primary"
+                w="15px"
+                h="15px"
+                borderRadius="100px"
+                cursor="pointer"
+                as={Button}
+                onClick={() => {
+                  setHingeActivated({ ...hingeActivated, topLeft: true });
+                }}
+              ></Box>
+            )}
+            {!hingeActivated.bottomRight && (
+              <Box
+                position="absolute"
+                left={block.width - 14}
+                top={block.height - 14}
+                color={block.color}
+                backgroundColor="primary"
+                w="15px"
+                h="15px"
+                borderRadius="100px"
+                cursor="pointer"
+                as={Button}
+                onClick={() => {
+                  setHingeActivated({ ...hingeActivated, bottomRight: true });
+                }}
+              ></Box>
+            )}
+            {!hingeActivated.bottomLeft && (
+              <Box
+                position="absolute"
+                right={block.width - 14}
+                top={block.height - 14}
+                color={block.color}
+                backgroundColor="primary"
+                w="15px"
+                h="15px"
+                borderRadius="100px"
+                cursor="pointer"
+                as={Button}
+                onClick={() => {
+                  setHingeActivated({ ...hingeActivated, bottomLeft: true });
+                }}
+              ></Box>
+            )}
+          </>
+        )}
+
+        {hingeActivated.topRight && (
           <Box
             position="absolute"
             left={block.width - 19}
             bottom={block.height - 19}
             color={block.color}
           >
-            <Button
-              className="bottom-right-btn"
-              style={{
-                right: 50 - block.width,
-                top: block.height - 40,
-              }}
-            >
-              click me
-            </Button>
+            <Hinge className="rotate" />
           </Box>
         )}
-
-        {/* <Box
-          position="absolute"
-          left={block.width - 19}
-          bottom={block.height - 19}
-          color={block.color}
-        >
-          <Hinge className="rotate" />
-        </Box>
-        <Box
-          position="absolute"
-          right={block.width - 19}
-          bottom={block.height - 19}
-          color={block.color}
-        >
-          <Hinge />
-        </Box>
-        <Box
-          position="absolute"
-          right={block.width - 18}
-          top={block.height - 18}
-          color={block.color}
-        >
-          <Hinge className="rotate" />
-        </Box>
-        <Box
-          position="absolute"
-          left={block.width - 18}
-          top={block.height - 18}
-          color={block.color}
-        >
-          <Hinge />
-        </Box> */}
+        {hingeActivated.topLeft && (
+          <Box
+            position="absolute"
+            right={block.width - 19}
+            bottom={block.height - 19}
+            color={block.color}
+          >
+            <Hinge />
+          </Box>
+        )}
+        {hingeActivated.bottomLeft && (
+          <Box
+            position="absolute"
+            right={block.width - 18}
+            top={block.height - 18}
+            color={block.color}
+          >
+            <Hinge className="rotate" />
+          </Box>
+        )}
+        {hingeActivated.bottomRight && (
+          <Box
+            position="absolute"
+            left={block.width - 18}
+            top={block.height - 18}
+            color={block.color}
+          >
+            <Hinge />
+          </Box>
+        )}
       </Box>
     </Draggable>
   );
