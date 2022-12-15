@@ -14,61 +14,74 @@ import {
   FormLabel,
   Container,
 } from '@chakra-ui/react';
+import { ReactComponent as Hinge } from './assets/hinge.svg';
 
 import './styles.css';
-
-const Hinge = () => {
-  return (
-    <div class="hinge">
-      <div class="box box-r concave">
-        <div class="r"></div>
-      </div>
-      <div class="box box-l concave">
-        <div class="l"></div>
-      </div>
-    </div>
-  );
-};
-
-const BaseBlock = ({ block, selected, ...props }) => {
-  return (
-    <Box
-      position="absolute"
-      border={selected ? '3px solid var(--colors-primary)' : ''}
-      w={`${block.width}px`}
-      h={`${block.height}px`}
-      borderRadius={'50px 50px 0px 50px'}
-      backgroundColor={block.color}
-      {...props}
-    />
-  );
-};
 
 const Block = ({ block, selected, ...props }) => {
   return (
     <Draggable key={block.id}>
-      <BaseBlock block={block} selected={selected} {...props}>
-        {false && (
-          <Button
-            className="bottom-right-btn"
-            style={{
-              right: 50 - block.width,
-              top: block.height - 40,
-            }}
+      <Box
+        position="relative"
+        className={cx({ dots: selected })}
+        w={`${block.width}px`}
+        h={`${block.height}px`}
+        borderRadius={'25px'}
+        backgroundColor={block.color}
+        {...props}
+      >
+        {selected && (
+          <Box
+            position="absolute"
+            left={block.width - 19}
+            bottom={block.height - 19}
+            color={block.color}
           >
-            click me
-          </Button>
+            <Button
+              className="bottom-right-btn"
+              style={{
+                right: 50 - block.width,
+                top: block.height - 40,
+              }}
+            >
+              click me
+            </Button>
+          </Box>
         )}
 
+        {/* <Box
+          position="absolute"
+          left={block.width - 19}
+          bottom={block.height - 19}
+          color={block.color}
+        >
+          <Hinge className="rotate" />
+        </Box>
         <Box
-          position="relative"
-          top={block.height - 50}
-          left={block.width - 25}
+          position="absolute"
+          right={block.width - 19}
+          bottom={block.height - 19}
+          color={block.color}
         >
           <Hinge />
-          <BaseBlock block={{color: 'accent'}}/>
         </Box>
-      </BaseBlock>
+        <Box
+          position="absolute"
+          right={block.width - 18}
+          top={block.height - 18}
+          color={block.color}
+        >
+          <Hinge className="rotate" />
+        </Box>
+        <Box
+          position="absolute"
+          left={block.width - 18}
+          top={block.height - 18}
+          color={block.color}
+        >
+          <Hinge />
+        </Box> */}
+      </Box>
     </Draggable>
   );
 };
@@ -101,7 +114,7 @@ const App = () => {
               setBlocks(
                 blocks.concat({
                   id: uuidv4(),
-                  color: 'accent',
+                  color: 'black',
                   height: 50,
                   width: 50,
                 })
