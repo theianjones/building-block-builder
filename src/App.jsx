@@ -30,10 +30,20 @@ import './styles.css';
 
 const RootBlockContext = createContext();
 
-const exportBlock = async (exportType, blockRef, block) => {
+const exportBlock = async (exportType, blockRef, block, exportSize) => {
+  function filter(node) {
+    return node.tagName !== 'BUTTON';
+  }
+
   switch (exportType) {
     case 'svg': {
-      toSvg(blockRef.current).then(function (dataUrl) {
+      toSvg(blockRef.current, {
+        filter: filter,
+        width: exportSize.width,
+        height: exportSize.height,
+      }).then(function (dataUrl) {
+        console.log(blockRef.current);
+        console.log(dataUrl);
         const link = document.createElement('a');
         link.download = `building-block-builder-${block.id}.svg`;
         link.href = dataUrl;
@@ -68,7 +78,8 @@ const BaseBlock = ({
     width: 50,
   });
 
-  const { rootBlock, rootBlockRef } = useContext(RootBlockContext);
+  const { rootBlock, rootBlockRef, exportSize, setExportSize } =
+    useContext(RootBlockContext);
 
   const topRightId = useMemo(() => uuidv4(), []);
   const topLeftId = useMemo(() => uuidv4(), []);
@@ -129,6 +140,10 @@ const BaseBlock = ({
                 <SizeInput
                   onChange={(newValue) => {
                     setSize({ ...size, height: newValue });
+                    setExportSize({
+                      ...exportSize,
+                      height: exportSize.height + (newValue - size.height),
+                    });
                   }}
                   defaultValue={size.height}
                 ></SizeInput>
@@ -138,12 +153,18 @@ const BaseBlock = ({
                 <SizeInput
                   onChange={(newValue) => {
                     setSize({ ...size, width: newValue });
+                    setExportSize({
+                      ...exportSize,
+                      width: exportSize.width + (newValue - size.width),
+                    });
                   }}
                   defaultValue={size.width}
                 ></SizeInput>
               </FormLabel>
               <Button
-                onClick={() => exportBlock('svg', rootBlockRef, rootBlock)}
+                onClick={() =>
+                  exportBlock('svg', rootBlockRef, rootBlock, exportSize)
+                }
               >
                 Export Block as Svg
               </Button>
@@ -163,6 +184,10 @@ const BaseBlock = ({
               as={Button}
               onClick={() => {
                 setHingeActivated({ ...hingeActivated, topRight: true });
+                setExportSize({
+                  width: exportSize.width + 50,
+                  height: exportSize.height + 50,
+                });
               }}
             ></Box>
           )}
@@ -180,6 +205,10 @@ const BaseBlock = ({
               as={Button}
               onClick={() => {
                 setHingeActivated({ ...hingeActivated, topLeft: true });
+                setExportSize({
+                  width: exportSize.width + 50,
+                  height: exportSize.height + 50,
+                });
               }}
             ></Box>
           )}
@@ -197,6 +226,10 @@ const BaseBlock = ({
               as={Button}
               onClick={() => {
                 setHingeActivated({ ...hingeActivated, bottomRight: true });
+                setExportSize({
+                  width: exportSize.width + 50,
+                  height: exportSize.height + 50,
+                });
               }}
             ></Box>
           )}
@@ -214,6 +247,10 @@ const BaseBlock = ({
               as={Button}
               onClick={() => {
                 setHingeActivated({ ...hingeActivated, bottomLeft: true });
+                setExportSize({
+                  width: exportSize.width + 50,
+                  height: exportSize.height + 50,
+                });
               }}
             ></Box>
           )}
@@ -239,7 +276,7 @@ const BaseBlock = ({
             bottom={size.height - 19}
             color={block.color}
           >
-            {/* <Hinge className="rotate" /> */}
+            <Hinge className="rotate" />
           </Box>
         </>
       )}
@@ -262,7 +299,7 @@ const BaseBlock = ({
             bottom={size.height - 19}
             color={block.color}
           >
-            {/* <Hinge /> */}
+            <Hinge />
           </Box>
         </>
       )}
@@ -285,7 +322,7 @@ const BaseBlock = ({
             top={size.height - 18}
             color={block.color}
           >
-            {/* <Hinge className="rotate" /> */}
+            <Hinge className="rotate" />
           </Box>
         </>
       )}
@@ -310,7 +347,7 @@ const BaseBlock = ({
             top={size.height - 18}
             color={block.color}
           >
-            {/* <Hinge /> */}
+            <Hinge />
           </Box>
         </>
       )}
@@ -320,18 +357,24 @@ const BaseBlock = ({
 
 const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
   const rootBlockRef = useRef();
+  const [exportSize, setExportSize] = useState({
+    width: block.width,
+    height: block.height,
+  });
   return (
-    <RootBlockContext.Provider value={{ rootBlock: block, rootBlockRef }}>
-      <Draggable key={block.id}>
-        <div ref={rootBlockRef}>
-          <BaseBlock
-            block={block}
-            selectedBlock={selectedBlock}
-            setSelected={setSelected}
-            {...props}
-          />
-        </div>
-      </Draggable>
+    <RootBlockContext.Provider
+      value={{ rootBlock: block, rootBlockRef, exportSize, setExportSize }}
+    >
+      {/* <Draggable key={block.id}> */}
+      <div ref={rootBlockRef} key={block.id}>
+        <BaseBlock
+          block={block}
+          selectedBlock={selectedBlock}
+          setSelected={setSelected}
+          {...props}
+        />
+      </div>
+      {/* </Draggable> */}
     </RootBlockContext.Provider>
   );
 };
