@@ -1,4 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useMemo,
+  useState,
+  useContext,
+  Provider,
+  useRef,
+} from 'react';
 import cx from 'classnames';
 import Draggable from 'react-draggable';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,8 +23,28 @@ import {
 } from '@chakra-ui/react';
 import { ReactComponent as Hinge } from './assets/hinge.svg';
 import Modal from './Modal';
+import { documentToSVG, elementToSVG, inlineResources } from 'dom-to-svg';
+import { toSvg } from 'html-to-image';
 
 import './styles.css';
+
+const RootBlockContext = createContext();
+
+const exportBlock = async (exportType, blockRef, block) => {
+  switch (exportType) {
+    case 'svg': {
+      toSvg(blockRef.current).then(function (dataUrl) {
+        const link = document.createElement('a');
+        link.download = `building-block-builder-${block.id}.svg`;
+        link.href = dataUrl;
+        link.click();
+      });
+      break;
+    }
+    default:
+      throw new Error(`${exportType} not supported`);
+  }
+};
 
 const BaseBlock = ({
   block,
@@ -41,6 +68,8 @@ const BaseBlock = ({
     width: 50,
   });
 
+  const { rootBlock, rootBlockRef } = useContext(RootBlockContext);
+
   const topRightId = useMemo(() => uuidv4(), []);
   const topLeftId = useMemo(() => uuidv4(), []);
   const bottomRightId = useMemo(() => uuidv4(), []);
@@ -48,9 +77,10 @@ const BaseBlock = ({
 
   return (
     <Box
+      id={block.id}
       onDoubleClick={(e) => {
         e.stopPropagation();
-        console.log(block.id);
+        console.log(e);
         if (selectedBlock?.id === block.id) {
           setSelected();
         } else {
@@ -90,6 +120,9 @@ const BaseBlock = ({
               p="6"
               borderRadius="5"
               opacity=".8"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             >
               <FormLabel>
                 Height:
@@ -109,6 +142,11 @@ const BaseBlock = ({
                   defaultValue={size.width}
                 ></SizeInput>
               </FormLabel>
+              <Button
+                onClick={() => exportBlock('svg', rootBlockRef, rootBlock)}
+              >
+                Export Block as Svg
+              </Button>
             </Box>
           </Modal>
           {!hingeActivated.topRight && !hingeTopRight && (
@@ -201,7 +239,7 @@ const BaseBlock = ({
             bottom={size.height - 19}
             color={block.color}
           >
-            <Hinge className="rotate" />
+            {/* <Hinge className="rotate" /> */}
           </Box>
         </>
       )}
@@ -224,7 +262,7 @@ const BaseBlock = ({
             bottom={size.height - 19}
             color={block.color}
           >
-            <Hinge />
+            {/* <Hinge /> */}
           </Box>
         </>
       )}
@@ -247,7 +285,7 @@ const BaseBlock = ({
             top={size.height - 18}
             color={block.color}
           >
-            <Hinge className="rotate" />
+            {/* <Hinge className="rotate" /> */}
           </Box>
         </>
       )}
@@ -272,7 +310,7 @@ const BaseBlock = ({
             top={size.height - 18}
             color={block.color}
           >
-            <Hinge />
+            {/* <Hinge /> */}
           </Box>
         </>
       )}
@@ -281,15 +319,20 @@ const BaseBlock = ({
 };
 
 const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
+  const rootBlockRef = useRef();
   return (
-    <Draggable key={block.id}>
-      <BaseBlock
-        block={block}
-        selectedBlock={selectedBlock}
-        setSelected={setSelected}
-        {...props}
-      />
-    </Draggable>
+    <RootBlockContext.Provider value={{ rootBlock: block, rootBlockRef }}>
+      <Draggable key={block.id}>
+        <div ref={rootBlockRef}>
+          <BaseBlock
+            block={block}
+            selectedBlock={selectedBlock}
+            setSelected={setSelected}
+            {...props}
+          />
+        </div>
+      </Draggable>
+    </RootBlockContext.Provider>
   );
 };
 
@@ -299,7 +342,7 @@ const SizeInput = ({ defaultValue, ...props }) => {
       <NumberInputField
         css={`padding: 10px;
       border-radius: 5px;
-      
+
       `}
       />
       <NumberInputStepper>
