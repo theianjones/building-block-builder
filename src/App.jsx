@@ -20,8 +20,20 @@ import {
   NumberDecrementStepper,
   FormLabel,
   Container,
+  VStack,
+  Card,
+  CardBody,
+  CardHeader,
+  CardFooter,
+  Slider,
+  SliderMark,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+  Badge,
 } from '@chakra-ui/react';
 import { ReactComponent as Hinge } from './assets/hinge.svg';
+import { ReactComponent as Logo } from './assets/logo.svg';
 import Modal from './Modal';
 import { documentToSVG, elementToSVG, inlineResources } from 'dom-to-svg';
 import { toSvg } from 'html-to-image';
@@ -399,28 +411,109 @@ const SizeInput = ({ defaultValue, ...props }) => {
 const App = () => {
   const [blocks, setBlocks] = useState([]);
   const [selectedBlock, setSelected] = useState();
+
+  const [sliderValue, setSliderValue] = useState(50);
+
+  const labelStyles = {
+    mt: '2',
+    ml: '-2.5',
+    fontSize: 'sm',
+  };
+
   return (
     <Container px="10">
-      <Flex direction="row" gap="16">
-        <Box as="aside" w={300} bgColor={'gray.300'}>
-          <Button
-            bgColor="primary"
-            padding={10}
-            borderRadius={5}
-            onClick={() => {
-              setBlocks(
-                blocks.concat({
-                  id: uuidv4(),
-                  color: 'black',
-                  height: 50,
-                  width: 50,
-                })
-              );
-            }}
-          >
-            Add Block
-          </Button>
-        </Box>
+      <Flex direction="row" gap="16px" alignItems="start">
+        <VStack align="left" alignItems="left">
+          <Card>
+            <CardBody alignContent="center">
+              <Logo />
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <h1>Building Block Builder</h1>
+            </CardHeader>
+            <CardBody>
+              <text>
+                Welcome to the Splash building block builder tool. Click the
+                “Add” button to begin. From there follow work instinctively by
+                clicking corners of your building block to add new ones. Change
+                the sizes with sliders, delete and combine blocks, etc.
+              </text>
+            </CardBody>
+            <CardFooter>
+              <text>
+                Version 1.0 / Ian Jones, Ian Petty, Ben Palin & Dante Pantalone
+                / 2022 Hackathon
+              </text>
+            </CardFooter>
+          </Card>
+          <Card>
+            <CardHeader>Create Blocks</CardHeader>
+            <CardBody>
+              <Button
+                variant="outline"
+                padding={'8px 16px'}
+                border={'1px solid #000'}
+                borderRadius={100}
+                marginRight={4}
+                onClick={() => {
+                  setBlocks(
+                    blocks.concat({
+                      id: uuidv4(),
+                      color: 'black',
+                      height: 50,
+                      width: 50,
+                    })
+                  );
+                }}
+              >
+                Add Block
+              </Button>
+              <Button
+                variant="outline"
+                padding={'8px 16px'}
+                border={'1px solid #000'}
+                borderRadius={100}
+                onClick={() => {
+                  setBlocks(
+                    blocks.concat({
+                      id: uuidv4(),
+                      color: 'black',
+                      height: 50,
+                      width: 50,
+                    })
+                  );
+                }}
+              >
+                Delete Block
+              </Button>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <text>Size</text>
+            </CardHeader>
+            <CardBody>
+              <Badge variant="brandPrimary">Vertical</Badge>
+              <Slider defaultValue={50} min={0} max={500} step={50}>
+                <SliderTrack bg="black">
+                  <Box position="relative" right={10} />
+                  <SliderFilledTrack bg="black" />
+                </SliderTrack>
+                <SliderThumb boxSize={6} />
+              </Slider>
+              <Badge variant="brandPrimary">Horizontal</Badge>
+              <Slider defaultValue={50} min={0} max={500} step={50}>
+                <SliderTrack bg="black">
+                  <Box position="relative" right={10} />
+                  <SliderFilledTrack bg="black" />
+                </SliderTrack>
+                <SliderThumb boxSize={6} />
+              </Slider>
+            </CardBody>
+          </Card>
+        </VStack>
         <div>
           {blocks.map((block) => {
             return (
