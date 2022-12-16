@@ -31,6 +31,8 @@ import {
   SliderThumb,
   SliderTrack,
   Badge,
+  HStack,
+  Wrap,
 } from '@chakra-ui/react';
 import { ReactComponent as Hinge } from './assets/hinge.svg';
 import { ReactComponent as Logo } from './assets/logo.svg';
@@ -511,6 +513,98 @@ const App = () => {
                 </SliderTrack>
                 <SliderThumb boxSize={6} />
               </Slider>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>Create Blocks</CardHeader>
+            <CardBody>
+              <Wrap>
+                <Button
+                  width="44%"
+                  backgroundColor="accent"
+                  padding={'8px 16px'}
+                  border={'1px solid #000'}
+                  borderRadius={100}
+                  onClick={() => {
+                    setBlocks(
+                      blocks.concat({
+                        id: uuidv4(),
+                        color: 'black',
+                        height: 50,
+                        width: 50,
+                      })
+                    );
+                  }}
+                ></Button>
+                <Button
+                  width="25%"
+                  backgroundColor="primary"
+                  padding={'8px 16px'}
+                  border={'1px solid #000'}
+                  borderRadius={100}
+                  onClick={() => {
+                    setBlocks(
+                      blocks.concat({
+                        id: uuidv4(),
+                        color: 'black',
+                        height: 50,
+                        width: 50,
+                      })
+                    );
+                  }}
+                ></Button>
+                <Button
+                  width="25%"
+                  backgroundColor="secondary"
+                  padding={'8px 16px'}
+                  border={'1px solid #000'}
+                  borderRadius={100}
+                  onClick={() => {
+                    setBlocks(
+                      blocks.concat({
+                        id: uuidv4(),
+                        color: 'black',
+                        height: 50,
+                        width: 50,
+                      })
+                    );
+                  }}
+                ></Button>
+                <Button
+                  width="100%"
+                  backgroundColor="white"
+                  padding={'8px 16px'}
+                  border={'1px solid #000'}
+                  borderRadius={100}
+                  onClick={() => {
+                    setBlocks(
+                      blocks.concat({
+                        id: uuidv4(),
+                        color: 'black',
+                        height: 50,
+                        width: 50,
+                      })
+                    );
+                  }}
+                ></Button>
+                <Button
+                  width="100%"
+                  backgroundColor="black"
+                  padding={'8px 16px'}
+                  border={'1px solid #000'}
+                  borderRadius={100}
+                  onClick={() => {
+                    setBlocks(
+                      blocks.concat({
+                        id: uuidv4(),
+                        color: 'black',
+                        height: 50,
+                        width: 50,
+                      })
+                    );
+                  }}
+                ></Button>
+              </Wrap>
             </CardBody>
           </Card>
         </VStack>
