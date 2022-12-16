@@ -15,6 +15,7 @@ import {
   Container,
 } from '@chakra-ui/react';
 import { ReactComponent as Hinge } from './assets/hinge.svg';
+import Modal from './Modal';
 
 import './styles.css';
 
@@ -76,27 +77,40 @@ const BaseBlock = ({
     >
       {selectedBlock?.id === block.id && (
         <>
-          <Box display="flex" flexDirection="column" gap="16px" position="revert" zIndex="1" top="200px">
-            <FormLabel>
-              Height:
-              <SizeInput
-                onChange={(newValue) => {
-                  setSize({ ...size, height: newValue });
-                }}
-                defaultValue={size.height}
-              ></SizeInput>
-            </FormLabel>
-            <FormLabel>
-              Width:
-              <SizeInput
-                onChange={(newValue) => {
-                  setSize({ ...size, width: newValue });
-                }}
-                defaultValue={size.width}
-              ></SizeInput>
-            </FormLabel>
-          </Box>
-
+          <Modal>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap="16px"
+              position="absolute"
+              zIndex="1"
+              top="50"
+              left="15"
+              backgroundColor="secondary"
+              p="6"
+              borderRadius="5"
+              opacity=".8"
+            >
+              <FormLabel>
+                Height:
+                <SizeInput
+                  onChange={(newValue) => {
+                    setSize({ ...size, height: newValue });
+                  }}
+                  defaultValue={size.height}
+                ></SizeInput>
+              </FormLabel>
+              <FormLabel>
+                Width:
+                <SizeInput
+                  onChange={(newValue) => {
+                    setSize({ ...size, width: newValue });
+                  }}
+                  defaultValue={size.width}
+                ></SizeInput>
+              </FormLabel>
+            </Box>
+          </Modal>
           {!hingeActivated.topRight && !hingeTopRight && (
             <Box
               position="absolute"
@@ -282,7 +296,12 @@ const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
 const SizeInput = ({ defaultValue, ...props }) => {
   return (
     <NumberInput step={50} defaultValue={defaultValue} min={50} {...props}>
-      <NumberInputField />
+      <NumberInputField
+        css={`padding: 10px;
+      border-radius: 5px;
+      
+      `}
+      />
       <NumberInputStepper>
         <NumberIncrementStepper />
         <NumberDecrementStepper />
