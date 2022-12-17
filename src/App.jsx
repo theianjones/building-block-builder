@@ -365,7 +365,7 @@ const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
     <RootBlockContext.Provider
       value={{ rootBlock: block, rootBlockRef, exportSize, setExportSize }}
     >
-      {/* <Draggable key={block.id}> */}
+      <Draggable key={block.id}>
       <div ref={rootBlockRef} key={block.id}>
         <BaseBlock
           block={block}
@@ -374,7 +374,7 @@ const RootBlock = ({ block, selectedBlock, setSelected, ...props }) => {
           {...props}
         />
       </div>
-      {/* </Draggable> */}
+      </Draggable>
     </RootBlockContext.Provider>
   );
 };
